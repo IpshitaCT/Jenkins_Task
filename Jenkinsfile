@@ -30,18 +30,6 @@ pipeline {
             }
         }
 
-        stage('Security Scan') {
-            steps {
-                sh 'dependency-check --project your-project --out .'
-            }
-            post {
-                always {
-                    archiveArtifacts artifacts: '**/dependency-check-report.html', allowEmptyArchive: true
-                }
-            }
-        }
-    }
-
     post {
         success {
             mail to: 'ipshitachaudhary2000@gmail.com',
