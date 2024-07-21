@@ -13,24 +13,9 @@ pipeline {
             }
         }
 
-        #stage('SonarQube Analysis') {
-         #   steps {
-          #      withSonarQubeEnv('SonarQube') {
-           #         sh 'mvn sonar:sonar'
-            #    }
-            #}
-        #}
 
-        stage('Code Coverage') {
-            steps {
-                sh 'mvn clean verify'
-                publishHTML(target: [
-                    reportName: 'JaCoCo Report',
-                    reportDir: 'target/site/jacoco',
-                    reportFiles: 'index.html'
-                ])
-            }
-        }
+
+ 
 
         stage('Cyclomatic Complexity') {
             steps {
