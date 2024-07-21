@@ -12,19 +12,21 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/IpshitaCT/Jenkins_Task.git'
             }
         }
-
-
-
- 
-
+        stage('Setup Python Environment') {
+            steps {
+                sh '''
+                    python3 -m venv venv
+                    . venv/bin/activate
+                    pip install lizard
+                '''
+            }
+        }
         stage('Cyclomatic Complexity') {
             steps {
-                sh 'lizard .'
-            }
-            post {
-                always {
-                    archiveArtifacts artifacts: '**/lizard-report.xml', allowEmptyArchive: true
-                }
+                sh '''
+                    . venv/bin/activate
+                    venv/bin/lizard path/to/your/code
+                '''
             }
         }
 
