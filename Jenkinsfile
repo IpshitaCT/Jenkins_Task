@@ -12,16 +12,18 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/IpshitaCT/Jenkins_Task.git'
             }
         }
-        stage('SonarQube Analysis') {
+        stage('SonarCloud Scan') {
             steps {
-                withSonarQubeEnv('Your SonarQube Server') {
-                    sh '''
-                        mvn sonar:sonar \
-                            -Dsonar.projectKey=your_project_key \
-                            -Dsonar.sources=path/to/your/code \
-                            -Dsonar.host.url=your_sonarqube_url \
-                            -Dsonar.login=your_sonarqube_token_or_username_password
-                    '''
+                script {
+                    def scannerHome = tool name: 'SonarScanner', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
+                    withSonarQubeEnv('Your SonarCloud') {
+                        sh "${scannerHome}/bin/sonar-scanner \
+                            -Dsonar.projectKey=IpshitaCT_Jenkins_Task\
+                            -Dsonar.organization=ipshitact \
+                            -Dsonar.sources=. \
+                            -Dsonar.host.url=https://sonarcloud.io \
+                            -Dsonar.login=a2c51ef132f9abc7dce60942dc62050418e4040f"
+                    }
                 }
             }
         }
