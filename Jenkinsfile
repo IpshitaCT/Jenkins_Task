@@ -40,7 +40,7 @@ pipeline {
             steps {
                 sh '''
                     . venv/bin/activate
-                    venv/bin/lizard path/to/your/code
+                    venv/bin/lizard .
                 '''
             }
         }
