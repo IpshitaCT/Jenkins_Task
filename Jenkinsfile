@@ -12,6 +12,12 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/IpshitaCT/Jenkins_Task.git'
             }
         }
+        stage('Build and Test') {
+            steps {
+                // Run Maven build which includes JaCoCo code coverage
+                sh 'mvn clean test'
+            }
+        }
         stage('SonarCloud Scan') {
             steps {
                 script {
@@ -25,6 +31,40 @@ pipeline {
                             -Dsonar.login=a2c51ef132f9abc7dce60942dc62050418e4040f"
                     }
                 }
+            }
+        }
+        stage('Sonar Quality Gate') {
+            steps {
+                script {
+                    def qualityGate = waitForQualityGate() // Wait for the SonarQube quality gate
+                    if (qualityGate.status != 'OK') {
+                        error "Quality gate failed: ${qualityGate.status}"
+                    }
+                }
+            }
+        }
+        stage('OWASP Dependency-Check') {
+            steps {
+                script {
+                    // Run OWASP Dependency-Check
+                    def report = 'dependency-check-report/dependency-check-report.xml'
+                    sh "mvn org.owasp:dependency-check-maven:check -Ddependency-check.reportFormat=XML -Ddependency-check.outputDirectory=dependency-check-report"
+                    
+                    // Archive the Dependency-Check report
+                    archiveArtifacts artifacts: report, allowEmptyArchive: true
+
+                    // Fail the build if critical vulnerabilities are found
+                    def result = readFile(report)
+                    if (result.contains('Critical')) {
+                        error "Critical vulnerabilities found in dependencies."
+                    }
+                }
+            }
+        }
+        stage('Publish JaCoCo Report') {
+            steps {
+                // Publish JaCoCo coverage report
+                recordIssues(tools: [jacoco(pattern: '**/target/site/jacoco/jacoco.xml')])
             }
         }
         stage('Setup Python Environment') {
