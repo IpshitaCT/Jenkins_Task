@@ -16,7 +16,7 @@ pipeline {
             steps {
                 script {
                     def scannerHome = tool name: 'SonarScanner', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
-                    withSonarQubeEnv('Your SonarCloud') {
+                    withSonarQubeEnv('SonarCloud') {
                         sh "${scannerHome}/bin/sonar-scanner \
                             -Dsonar.projectKey=IpshitaCT_Jenkins_Task\
                             -Dsonar.organization=ipshitact \
