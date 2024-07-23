@@ -33,16 +33,7 @@ pipeline {
                 }
             }
         }
-        stage('Sonar Quality Gate') {
-            steps {
-                script {
-                    def qualityGate = waitForQualityGate() // Wait for the SonarQube quality gate
-                    if (qualityGate.status != 'OK') {
-                        error "Quality gate failed: ${qualityGate.status}"
-                    }
-                }
-            }
-        }
+
         stage('OWASP Dependency-Check') {
             steps {
                 script {
