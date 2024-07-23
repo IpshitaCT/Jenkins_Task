@@ -12,6 +12,19 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/IpshitaCT/Jenkins_Task.git'
             }
         }
+        stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv('Your SonarQube Server') {
+                    sh '''
+                        mvn sonar:sonar \
+                            -Dsonar.projectKey=your_project_key \
+                            -Dsonar.sources=path/to/your/code \
+                            -Dsonar.host.url=your_sonarqube_url \
+                            -Dsonar.login=your_sonarqube_token_or_username_password
+                    '''
+                }
+            }
+        }
         stage('Setup Python Environment') {
             steps {
                 sh '''
